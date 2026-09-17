@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ASF Leitura de Mar — Treinador Interativo</title>
+<meta name="description" content="Treinador interativo para identificar correntes de retorno e canais olhando a praia. Satélite do app ASF.">
+<style>:root{--p:#00a8cc;--pd:#0e2439;--g:#f4d03f}*{box-sizing:border-box;margin:0}body{font-family:system-ui,sans-serif;background:#f6fbfd;color:var(--pd)}nav{background:var(--pd);padding:9px 12px;display:flex;flex-wrap:wrap;gap:6px}nav a{color:#fff;text-decoration:none;font-size:11px;font-weight:600;padding:4px 8px;border-radius:20px;background:rgba(255,255,255,.08)}nav a.hub{background:var(--g);color:var(--pd)}header{padding:32px 20px;text-align:center;background:linear-gradient(135deg,#00a8cc20,#27ae6012)}h1{font-size:25px}main{max-width:560px;margin:20px auto;padding:0 16px}.card{background:#fff;border-radius:14px;padding:18px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.06)}canvas{width:100%;border-radius:10px;display:block;cursor:crosshair}.opt{display:block;width:100%;text-align:left;padding:12px 14px;margin:6px 0;background:#fff;border:1.5px solid #dde;border-radius:10px;cursor:pointer;font-size:14px}.opt:hover{border-color:var(--p)}.opt.ok{background:#27ae6015;border-color:#27ae60;color:#27ae60}.opt.no{background:#e74c3c15;border-color:#e74c3c;color:#e74c3c}.muted{color:#678;font-size:13px}footer{text-align:center;padding:26px;font-size:12px;color:#678}</style>
+</head>
+<body>
+<nav>
+<a class="hub" href="https://acarolmourad-commits.github.io/asf-app/">🏄‍♀️ ASF App</a>
+<a href="https://acarolmourad-commits.github.io/asf-sos/">🆘</a><a href="https://acarolmourad-commits.github.io/asf-seguranca/">🛟</a><a href="https://acarolmourad-commits.github.io/asf-mare/">🌙</a><a href="https://acarolmourad-commits.github.io/asf-previsao/">🌊</a><a href="https://acarolmourad-commits.github.io/asf-praias/">🏖️</a><a href="https://acarolmourad-commits.github.io/asf-treino/">💪</a><a href="https://acarolmourad-commits.github.io/asf-popup/">⏱️</a><a href="https://acarolmourad-commits.github.io/asf-desafio/">🗓️</a><a href="https://acarolmourad-commits.github.io/asf-eventos/">📅</a><a href="https://acarolmourad-commits.github.io/asf-glossario/">📖</a><a href="https://acarolmourad-commits.github.io/asf-comunidade/">💜</a><a href="https://acarolmourad-commits.github.io/asf-bemestar/">🧘</a><a href="https://acarolmourad-commits.github.io/asf-quiz/">🧠</a><a href="https://acarolmourad-commits.github.io/asf-equipamento/">🏄</a><a href="https://acarolmourad-commits.github.io/asf-nutricao/">🥑</a><a href="https://acarolmourad-commits.github.io/asf-viagens/">✈️</a><a href="https://acarolmourad-commits.github.io/asf-historia/">📜</a><a href="https://acarolmourad-commits.github.io/asf-diario/">📓</a><a href="https://acarolmourad-commits.github.io/asf-respira/">🫁</a><a href="https://acarolmourad-commits.github.io/asf-volume/">📐</a>
+</nav>
+<header><h1>👁️ ASF Leitura de Mar</h1><p class="muted">Onde está a corrente de retorno? Toque no ponto certo da cena</p></header>
+<main>
+<div class="card">
+<p style="font-size:14px;font-weight:600;margin-bottom:10px" id="q">Cena 1: observe as espumas e o canal de água escura. Toque onde a corrente de retorno está saindo.</p>
+<canvas id="cv" width="560" height="300"></canvas>
+<p class="muted" style="margin-top:8px" id="fb"></p>
+<p class="muted" style="margin-top:6px;font-weight:700">Pontos: <span id="score">0</span>/<span id="tot">0</span></p>
+</div>
+<div class="card"><p class="muted">🧠 Regra de ouro: corrente de retorno = faixa de água <b>mais escura e sem espuma</b> cortando a arrebentação. Revise no <a href="https://acarolmourad-commits.github.io/asf-seguranca/">ASF Segurança</a> e memorize com o <a href="https://acarolmourad-commits.github.io/asf-quiz/">Quiz do Dia</a>.</p></div>
+</main>
+<footer>Parte da constelação ASF • <a href="https://acarolmourad-commits.github.io/asf-app/">Voltar ao app principal</a></footer>
+<script>
+const cv=document.getElementById('cv'),c=cv.getContext('2d');
+const cenas=[
+{rip:[0.5,0.45],dicas:['espuma contínua à esquerda','canal escuro no centro']},
+{rip:[0.25,0.5],dicas:['canal estreito à esquerda','ondas quebrando à direita']},
+{rip:[0.75,0.4],dicas:['espuma quebrada no canto direito','água calma suspeita à direita']}];
+let i=0,score=0,tot=0;
+function draw(){
+ const[cx,cy]=cenas[i].rip;
+ const g=c.createLinearGradient(0,0,0,300);g.addColorStop(0,'#8fd8ef');g.addColorStop(0.55,'#3ba9c9');g.addColorStop(1,'#e8d9b0');c.fillStyle=g;c.fillRect(0,0,560,300);
+ // sand
+ c.fillStyle='#e8d9b0';c.fillRect(0,250,560,50);
+ // foam lines (breaking waves) except at rip channel
+ c.strokeStyle='rgba(255,255,255,.85)';c.lineWidth=3;
+ for(let l=0;l<3;l++){c.beginPath();for(let x=0;x<=560;x+=8){const y=90+l*50+Math.sin(x/40+l)*6;const inRip=Math.abs(x/560-cx)<0.09;if(!inRip){c.lineTo(x,y)}else{c.moveTo(x+8,y)}}c.stroke()}
+ // rip channel darker
+ c.fillStyle='rgba(10,60,90,.35)';c.fillRect(cx*560-25,60,50,190);
+ c.fillStyle='#fff';c.font='13px system-ui';c.fillText('🏖️ areia',10,275);
+}
+cv.onclick=e=>{
+ const r=cv.getBoundingClientRect();const x=(e.clientX-r.left)*(560/r.width)/560;
+ const[cx]=cenas[i].rip;tot++;document.getElementById('tot').textContent=tot;
+ const ok=Math.abs(x-cx)<0.1;const fb=document.getElementById('fb');
+ if(ok){score++;document.getElementById('score').textContent=score;fb.textContent='✅ Exato! Canal escuro sem espuma = corrente de retorno. Nunca entre aí.';fb.style.color='#27ae60'}
+ else{fb.textContent='❌ Quase! A corrente está no canal de água escura e calma (faixa sem espuma).';fb.style.color='#e74c3c'}
+ setTimeout(()=>{i=(i+1)%cenas.length;fb.textContent='';document.getElementById('q').textContent='Cena '+(i+1)+': observe as espumas e o canal de água escura. Toque onde a corrente de retorno está saindo.';draw()},2200);
+};
+draw();
+</script>
+</body>
+</html>
